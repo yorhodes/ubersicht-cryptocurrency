@@ -2,7 +2,7 @@ export const command = ```
     source .env.coinmarketcap && \
     curl \
     -H "X-CMC_PRO_API_KEY: $API_KEY" -H "Accept: application/json" \
-    -d "symbol=CELO,ETH,BTC" \
+    -d "$QUOTES_LATEST_DATA" \
     -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
 ```
 
@@ -47,7 +47,7 @@ const getDate = () => {
     ].join(':')
 }
 
-const update = (output, domEl) => {
+export const updateState = (output, domEl) => {
   resArr = JSON.parse(output)[0]
   holdingsArray = JSON.parse(output)[1]
   fmtDate = getDate()
@@ -62,7 +62,7 @@ const update = (output, domEl) => {
       updateBox(box, info.html, fmtDate)
   }
 
-//   update 'total' portfolio value rounded to cents
+  //   update 'total' portfolio value rounded to cents
   totalBox = $(domEl).find('.total')
   portfolio.color = (portfolio.value >= portfolio.cost_basis) ? 'green' : 'red'
   portfolio.html = (
