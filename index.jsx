@@ -2,7 +2,8 @@ export const command = ```
     source .env.coinmarketcap && \
     curl \
     -H "X-CMC_PRO_API_KEY: $API_KEY" -H "Accept: application/json" \
-    -d @quotes_latest_body.json https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
+    -d "symbol=CELO,ETH,BTC" \
+    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
 ```
 
 export const refreshFrequency = 5*60*1000 // 5 mins * 60 seconds * 1000 milliseconds
