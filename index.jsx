@@ -1,178 +1,74 @@
-export const command = ```
-    source .env.coinmarketcap && \
-    curl \
-    -H "X-CMC_PRO_API_KEY: $API_KEY" -H "Accept: application/json" \
-    -d "$QUOTES_LATEST_DATA" \
-    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
-```
+import { styled } from "uebersicht";
+import { API_KEY } from './lib/config.js';
 
-export const refreshFrequency = 5*60*1000 // 5 mins * 60 seconds * 1000 milliseconds
+const Icon = ({ width = 24, height = 24, scaleHeight = 20, children, ...props }) => (
+  <svg viewBox={`0 0 ${width} ${height}`} height={scaleHeight} {...props}>
+    {children}
+  </svg>
+);
 
-export const render = ({output}) => {
-    holdingsArray = JSON.parse(output)[1]
-    boxes = ""
-    for (coin, attrs of holdingsArray) {
-        boxes += genHtmlBox(attrs.ticker) + "\n"
-    }
-    boxes += genHtmlBox('total', 'USD')
+const CeloIcon = (props) => (
+  <Icon width={950} height={950} {...props}>
+    <path fill="#fbcc5c" d="M375,850c151.88,0,275-123.12,275-275S526.88,300,375,300,100,423.12,100,575,223.12,850,375,850Zm0,100C167.9,950,0,782.1,0,575S167.9,200,375,200,750,367.9,750,575,582.1,950,375,950Z"/>
+    <path fill="#35d07f" d="M575,650c151.88,0,275-123.12,275-275S726.88,100,575,100,300,223.12,300,375,423.12,650,575,650Zm0,100c-207.1,0-375-167.9-375-375S367.9,0,575,0,950,167.9,950,375,782.1,750,575,750Z"/>
+    <path fill="#5ea33b" d="M587.39,750a274.38,274.38,0,0,0,54.55-108.06A274.36,274.36,0,0,0,750,587.4a373.63,373.63,0,0,1-29.16,133.45A373.62,373.62,0,0,1,587.39,750ZM308.06,308.06A274.36,274.36,0,0,0,200,362.6a373.63,373.63,0,0,1,29.16-133.45A373.62,373.62,0,0,1,362.61,200,274.38,274.38,0,0,0,308.06,308.06Z"/>
+  </Icon>
+);
 
-    return boxes
-}
+const BitcoinIcon = (props) => (
+  <Icon width={256} height={256} {...props}>
+    <circle fill="#fa8a34" cx="128" cy="128" r="128"/>
+    <path fill="#fff" d="M1204.1,462.447c-4.67,12.309-32.28,20.379-32.28,20.379l5.38,22.428-14.21,3.4-5.41-22.585-11.24,2.563,5.44,22.708-14.21,3.4-5.48-22.865-28.48,6.493-1.13-17.911s5.18-.648,9.9-1.581,4.82-6.292,4.19-8.909-12.85-53.641-14.15-59.061-6.97-6.829-9.44-6.434-10.29,3.255-10.29,3.255l-3.58-14.952,27.66-6.626-5.55-23.176,14.2-3.4,5.55,23.176c4.06-.972,7.9-1.89,11.22-2.686l-5.55-23.176,14.2-3.4,5.59,23.311c6.37-1.033,18.66-2.112,26.25.684,9.1,3.353,15.14,14.553,15.8,23.091s-8.38,17.817-8.38,17.817,14.2,0.988,20.24,8.591C1212.62,442.426,1206.19,456.916,1204.1,462.447Zm-78.62-64.174,6.81,28.41s12.27-1.557,19.83-6.33,10.78-9.509,9.66-15.754c-1.19-6.631-8.99-10.52-16.68-10.234A73.025,73.025,0,0,0,1125.48,398.273Zm9.46,42.794,7.35,30.652s19.47-3.676,25.8-7.763,13.55-11.94,9.34-20.419-15.95-8.035-23.8-6.947A145.286,145.286,0,0,0,1134.94,441.067Z" data-name="Фигура 1 копия" id="Фигура_1_копия" transform="translate(-1016 -309)"/>
+  </Icon>
+);
 
-/*  A method that generates a HTML block
-for a coin
+const EthereumIcon = (props) => (
+  <Icon width={156} height={256} {...props}>
+    <path d="M0,128 L80,0 L80,93.5358372 L0,128 Z M156,128 L80,93.5809573 L80,0 L156,128 Z" fill="#828384" id="Combined-Shape"/>
+    <path d="M80,176 L0,131.00396 L80,96 L80,176 Z M156,131.011473 L80,176 L80,96 L156,131.011473 Z" fill="#343535" id="Combined-Shape"/>
+    <path d="M0,148 L80,194.180711 L80,256 L0,148 Z M156,148 L80,256 L80,194.175361 L156,148 Z" fill="#828384" id="Combined-Shape"/>
+    <polygon fill="#2F3030" id="Path-3" points="156 128 80 93.5809573 80 0"/>
+    <polygon fill="#131313" id="Path-5" points="156 131.011473 80 96 80 176"/>
+    <polygon fill="#2F3030" id="Path-7" points="156 148 80 194.175361 80 256"/>
+  </Icon>
+);
 
-coinName - Name of a coin to generate box for (e.g. bitcoin)
-ticker - Ticker for a given coin (e.g. BTC). Defaults to coinName
-*/
-const genHtmlBox = (coinName, ticker = coinName) => (
-    <div class={coinName.toLowerCase()+' box'}>
-        <div class='ticker'>1 {ticker.toUpperCase()}</div>
-        <div class='badge lastUpdated'>Last Updated</div>
-        <div class='price'></div>
-    </div>
-)
-
-/*
-A function that gets current date in a form of HH:MM
-returns formatted date 
-*/
-const getDate = () => {
-    d = new Date()
-    hours = d.getHours()
-    mins = d.getMinutes()
-    return "Updated: " + [
-        hours > 9 ? '' : '0' + hours,
-        mins > 9 ? '' : '0' + mins
-    ].join(':')
-}
-
-export const updateState = (output, domEl) => {
-  resArr = JSON.parse(output)[0]
-  holdingsArray = JSON.parse(output)[1]
-  fmtDate = getDate()
-  portfolio = {value: 0, cost_basis: 0, html: "", color: ""}
-
-  for (coin, attrs of holdingsArray) {
-      coinRes = findCoinResults(resArr, coin)
-      box = $(domEl).find('.' + attrs.ticker.toLowerCase())
-      info = getPriceInfo(coinRes, attrs)
-      portfolio.value += info.value
-      portfolio.cost_basis += (coin.cost_basis == undefined) ? 0 : coin.cost_basis
-      updateBox(box, info.html, fmtDate)
-  }
-
-  //   update 'total' portfolio value rounded to cents
-  totalBox = $(domEl).find('.total')
-  portfolio.color = (portfolio.value >= portfolio.cost_basis) ? 'green' : 'red'
-  portfolio.html = (
-    <div class={"value" + portfolio.color}>
-      {roundAmount(portfolio.value, 2)}
-    </div>
-  )
-  updateBox(totalBox, portfolio.html, fmtDate)
-}
-
-
-/* 
-    Finds a coin to generate data for from json response
-
-    jsonResponse - JSON with info about all coins
-    coinName - name of a coin to search for
-*/
-const findCoinResults = (jsonResponse, coinName) => {
-    for (coin in jsonResponse) {
-        if (coin['id'] == coinName)
-            return coin
-    }
-    return {}
-}
-
-/* Sets date and value to a HTML box
-
-boxName - class name for a HTML box to update
-value - current price for a given coin
-date - date string when it was last updated
-*/
-const updateBox = (boxName, value, date) => {
-    $(boxName).find('.price').html + value
-    $(boxName).find('.lastUpdated').html + date
-}
-
-
-/*
-Rounds a value to a number of decimals
-
-amount - number to round
-precision - number of numbers after decimal point
-*/
-const roundAmount = (amount, precision) => {
-    prec = Math.pow(10, precision)
-    rv = Math.round(amount * prec) / prec
-
-    return rv
-}
-
-
-/* Gets price information for a given coin
-
-json - JSON object for a given coin
-coin - coin config from holdings
-
-returns JSON object containing HTML to be rendered
-    and raw value of holdings */
-const getPriceInfo = (json, coin) => {
-    price = json['price_usd']
-    change = json['percent_change_1h']
-    value = coin.holdings * price
-    if (coin.cost_basis == undefined) {
-        color = change >= 0 ? 'green' : 'red'
-    } else {
-        color = value > coin.cost_basis ? 'green' : 'red'
-    }
-    
-    return {
-        html: (
-            <div>
-                <div class='price default'>{roundAmount(price, coin.round)}</div>
-                <div class='badge default'>Last Price</div>
-                <div class={"value" + color}>{roundAmount(value, 2)}</div>
-                <div class='currency default'>USD</div>
-            </div>
-        ),
-        value
-    }
-}
-
-export const className = `
-  bottom: 0.5%'
-  right: 0.5%'
-  color: white'
-  font-family: 'Helvetica Neue''
-  font-weight: 100'
-  text-align: left'
-  margin: 5px'
-  width: 200px'
-  text-align: center'
-  background-color: black'
-  .box'
-    padding: 3px'
-    border: 1px solid rgba(#FFF, 50%)'
-    font-size: 24px'
-    .price'
-      font-size: 32px'
-    .ticker, .lastUpdated'
-      text-align: left'
-    .currency, .badge'
-      text-align: right'
-    .currency, .ticker, .badge, .lastUpdated'
-      font-size: 10px'
-      font-weight: 500'
-      letter-spacing: 1px'
-    .green'
-      color: green'
-    .red'
-      color: red'
-    .default'
-      color: white'
+const Container = styled("div")`
+  padding-left: 150px;
+  padding-top: 10px;
+  display: flex;
 `
+const Box = styled("div")`
+  padding-left: 10px;
+  padding-right: 10px;
+`
+
+const StyledText = styled("text")`
+  color: white;
+`
+
+export const command = `curl -s \
+  -H "X-CMC_PRO_API_KEY: ${API_KEY}" -H "Accept: application/json" \
+  -d "symbol=CELO,ETH,BTC" \
+  -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
+`;
+
+export const refreshFrequency = 5*60*1000; // 5 mins * 60 seconds * 1000 milliseconds
+
+export const render = ({output, error}) => {
+  if (error || !output) {
+    return (<div>Something went wrong: <strong>{String(error)}</strong></div>);
+  }
+  const result = JSON.parse(output);
+  return <Container>
+    <Box>
+      <BitcoinIcon></BitcoinIcon><StyledText>${parseFloat(result.data.BTC.quote.USD.price).toFixed(2)}</StyledText>
+    </Box>
+    <Box>
+      <EthereumIcon></EthereumIcon><StyledText>${parseFloat(result.data.ETH.quote.USD.price).toFixed(2)}</StyledText>
+    </Box>
+    <Box>
+      <CeloIcon></CeloIcon><StyledText>${parseFloat(result.data.CELO.quote.USD.price).toFixed(2)}</StyledText>
+    </Box>
+  </Container>;
+};
