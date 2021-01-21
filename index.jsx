@@ -35,16 +35,23 @@ const EthereumIcon = (props) => (
 
 const Container = styled("div")`
   padding-left: 150px;
-  padding-top: 10px;
+  padding-top: 9px;
   display: flex;
 `
 const Box = styled("div")`
   padding-left: 10px;
   padding-right: 10px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
-const StyledText = styled("text")`
-  color: white;
+const StyledText = styled("span")`
+  color: black;
+  font-family: JetBrains Mono;
+  font-size: 70%;
+  padding-left: 5px;
 `
 
 export const command = `curl -s \
