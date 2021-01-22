@@ -34,7 +34,7 @@ const EthereumIcon = (props) => (
 );
 
 const Container = styled("div")`
-  padding-left: 150px;
+  padding-left: 175px;
   padding-top: 9px;
   display: flex;
 `
@@ -48,7 +48,6 @@ const Box = styled("div")`
 `
 
 const StyledText = styled("span")`
-  color: black;
   font-family: JetBrains Mono;
   font-size: 70%;
   padding-left: 5px;
@@ -66,16 +65,20 @@ export const render = ({output, error}) => {
   if (error || !output) {
     return (<div>Something went wrong: <strong>{String(error)}</strong></div>);
   }
-  const result = JSON.parse(output);
-  return <Container>
-    <Box>
-      <BitcoinIcon></BitcoinIcon><StyledText>${parseFloat(result.data.BTC.quote.USD.price).toFixed(2)}</StyledText>
-    </Box>
-    <Box>
-      <EthereumIcon></EthereumIcon><StyledText>${parseFloat(result.data.ETH.quote.USD.price).toFixed(2)}</StyledText>
-    </Box>
-    <Box>
-      <CeloIcon></CeloIcon><StyledText>${parseFloat(result.data.CELO.quote.USD.price).toFixed(2)}</StyledText>
-    </Box>
-  </Container>;
+  try {
+    const result = JSON.parse(output);
+    return <Container>
+      <Box>
+        <BitcoinIcon></BitcoinIcon><StyledText>${parseFloat(result.data.BTC.quote.USD.price).toFixed(2)}</StyledText>
+      </Box>
+      <Box>
+        <EthereumIcon></EthereumIcon><StyledText>${parseFloat(result.data.ETH.quote.USD.price).toFixed(2)}</StyledText>
+      </Box>
+      <Box>
+        <CeloIcon></CeloIcon><StyledText>${parseFloat(result.data.CELO.quote.USD.price).toFixed(2)}</StyledText>
+      </Box>
+    </Container>;
+  } catch (e) {
+    return <Container>Error {e.toString()}</Container>
+  }
 };
