@@ -47,10 +47,13 @@ const Box = styled("div")`
   align-items: center;
 `
 
+const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
 const StyledText = styled("span")`
   font-family: JetBrains Mono;
   font-size: 70%;
   padding-left: 5px;
+  color: ${isDarkMode() ? 'white' : 'black'}
 `
 
 export const command = `curl -s \
