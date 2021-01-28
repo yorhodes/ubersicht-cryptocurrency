@@ -72,13 +72,13 @@ export const render = ({output, error}) => {
     const result = JSON.parse(output);
     return <Container>
       <Box>
-        <BitcoinIcon></BitcoinIcon><StyledText>${parseFloat(result.data.BTC.quote.USD.price).toFixed(2)}</StyledText>
+        <BitcoinIcon></BitcoinIcon><StyledText>${parseFloat(result.data.BTC.quote.USD.price).toPrecision(5)}</StyledText>
       </Box>
       <Box>
-        <EthereumIcon></EthereumIcon><StyledText>${parseFloat(result.data.ETH.quote.USD.price).toFixed(2)}</StyledText>
+        <EthereumIcon></EthereumIcon><StyledText>${parseFloat(result.data.ETH.quote.USD.price).toPrecision(5)}</StyledText>
       </Box>
       <Box>
-        <CeloIcon></CeloIcon><StyledText>${parseFloat(result.data.CELO.quote.USD.price).toFixed(2)}</StyledText>
+        <CeloIcon></CeloIcon><StyledText>${parseFloat(result.data.CELO.quote.USD.price).toPrecision(5)}</StyledText>
       </Box>
     </Container>;
   } catch (e) {
